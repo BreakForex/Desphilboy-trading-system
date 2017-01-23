@@ -2,7 +2,7 @@
 #property copyright "Iman Dezfuly"
 #property link      "http://www.Iman.ir"
 
-#define version      "201609121"
+#define version      "201701121"
 
 #include "./desphilboy.mqh"
 

@@ -4,6 +4,7 @@
 #define version      "201701121"
 
 #include "./desphilboy.mqh"
+#include "./panic.mqh"
 
 extern bool    CreatePositions = false;
 extern int     NumberOfBuyStops  = 5;
@@ -47,8 +48,6 @@ void init()
       CreatePositions = false;
    }
    
-   
-   
 return;
 }
 
@@ -62,6 +61,7 @@ void OnTimer() {
    if( result == IDOK){
       once = true;
    }
+
 }
 
 
@@ -77,6 +77,7 @@ void start()
       once = false;
    }
   return;
+
 }
 
 
