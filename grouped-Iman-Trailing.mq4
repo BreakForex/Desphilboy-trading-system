@@ -7,9 +7,21 @@
 #include "./desphilboy.mqh"
 
 extern bool   AllPositions  =True;         
-extern int    TrailingStopVL = 300, TrailingStopL = 200, TrailingStopM = 110, TrailingStopS = 60, TrailingStopU = 30;            
-extern int    TrailingStepVL  =30, TrailingStepL  =30, TrailingStepM = 30, TrailingStepS = 30, TrailingStepU = 30;             
+extern int    TrailingStopVL = 300, TrailingStopL = 200, TrailingStopM = 110, TrailingStopS = 70, TrailingStopU = 40;            
+extern int    TrailingStepVL  =30, TrailingStepL  =30, TrailingStepM = 30, TrailingStepS = 20, TrailingStepU = 20;             
 extern FiboRetrace  RetraceFactorVL=MaxRetrace, RetraceFactorL=MaxRetrace, RetraceFactorM = HalfRetrace, RetraceFactorS = LowRetrace, RetraceFactorU = MinRetrace;
+extern LifeTimes TimeFrameVL=ThreeDays, TimeFrameL=SixteenHours, TimeFrameM=FourHours, TimeFrameS=Hour, TimeFrameU=Quarter;
+
+int fillTrailingInfo( int& tinfo[][])
+{
+tinfo[gid_NoGroup][0] = tinfo[gid_NoGroup][1] = tinfo[gid_NoGroup][2] = tinfo[gid_NoGroup][3] = 0;
+tinfo[gid_VeryLongTerm][TrailingStop]=TrailingStopVL; tinfo[gid_VeryLongTerm][Step]=TrailingStepVL; tinfo[gid_VeryLongTerm][Retrace]=RetraceFactorVL; tinfo[gid_VeryLongTerm][LifePeriod]=TimeFrameVL;
+tinfo[gid_LongTerm][TrailingStop]=TrailingStopL; tinfo[gid_LongTerm][Step]=TrailingStepL; tinfo[gid_LongTerm][Retrace]=RetraceFactorL; tinfo[gid_LongTerm][LifePeriod]=TimeFrameL;
+tinfo[gid_MediumTerm][TrailingStop]=TrailingStopM; tinfo[gid_MediumTerm][Step]=TrailingStepM; tinfo[gid_MediumTerm][Retrace]=RetraceFactorM; tinfo[gid_MediumTerm][LifePeriod]=TimeFrameM;
+tinfo[gid_ShortTerm][TrailingStop]=TrailingStopS; tinfo[gid_ShortTerm][Step]=TrailingStepS; tinfo[gid_ShortTerm][Retrace]=RetraceFactorS; tinfo[gid_ShortTerm][LifePeriod]=TimeFrameS;
+tinfo[gid_UserGroup][TrailingStop]=TrailingStopU; tinfo[gid_UserGroup][Step]=TrailingStepU; tinfo[gid_UserGroup][Retrace]=RetraceFactorU; tinfo[gid_UserGroup][LifePeriod]=TimeFrameU;
+return 0;
+}
 
 
 int init()
@@ -18,6 +30,8 @@ int init()
   Print("stops(VL,L,M,S,U):", TrailingStopVL, ",",TrailingStopL, ",", TrailingStopM, ",", TrailingStopS, ",", TrailingStopU); 
   Print("steps(VL,L,M,S,U):", TrailingStepVL, ",", TrailingStepL, ",", TrailingStepM, ",", TrailingStepS, ",", TrailingStepU);
   Print("Retraces(VL,L,M,S,U):", RetraceFactorVL, ",", RetraceFactorL, ",", RetraceFactorM, ",", RetraceFactorS, ",", RetraceFactorU);
+  Print("LifeTimes(VL,L,M,S,U):", TimeFrameVL, ",", TimeFrameL, ",", TimeFrameM, ",", TimeFrameS, ",", TimeFrameU);
+  fillTrailingInfo(TrailingInfo);
   return(0); 
 }
 
@@ -32,11 +46,11 @@ int init()
         {
            if (AllPositions || OrderSymbol()==Symbol()) 
            {
-           if(isVeryLongTerm(OrderMagicNumber())) {TrailingPositions(TrailingStopVL, TrailingStepVL, RetraceFactorVL);}
-                  else if(isLongTerm(OrderMagicNumber())) {TrailingPositions(TrailingStopL, TrailingStepL, RetraceFactorL);}
-                        else if(isMediumTerm(OrderMagicNumber())){TrailingPositions(TrailingStopM, TrailingStepM, RetraceFactorM);}
-                            else if(isShortTerm(OrderMagicNumber())){TrailingPositions(TrailingStopS, TrailingStepS, RetraceFactorS);}
-                                 else if(isUserGroup(OrderMagicNumber())){TrailingPositions(TrailingStopU, TrailingStepU, RetraceFactorU);}
+           if(isVeryLongTerm(OrderMagicNumber())) {TrailingPositions(getCurrentTrailingStop(OrderTicket(),TrailingInfo), TrailingStepVL, RetraceFactorVL);}
+                  else if(isLongTerm(OrderMagicNumber())) {TrailingPositions(getCurrentTrailingStop(OrderTicket(),TrailingInfo), TrailingStepL, RetraceFactorL);}
+                        else if(isMediumTerm(OrderMagicNumber())){TrailingPositions(getCurrentTrailingStop(OrderTicket(),TrailingInfo), TrailingStepM, RetraceFactorM);}
+                            else if(isShortTerm(OrderMagicNumber())){TrailingPositions(getCurrentTrailingStop(OrderTicket(),TrailingInfo), TrailingStepS, RetraceFactorS);}
+                                 else if(isUserGroup(OrderMagicNumber())){TrailingPositions(getCurrentTrailingStop(OrderTicket(),TrailingInfo), TrailingStepU, RetraceFactorU);}
            }
         }
      }
